@@ -1,24 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed_IOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="klR-ze-Dne">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" name="YP Black (iOS)"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="192" id="7gx-X3-mri" customClass="ImagesListCell" customModule="ImageFeed_IOS" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="192"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7gx-X3-mri" id="37P-Q8-zgE">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="192"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="Lqr-tU-WPf" userLabel="Cell Image">
+                                                    <rect key="frame" x="16" y="4" width="361" height="184"/>
+                                                    <color key="backgroundColor" name="YP Black (iOS)"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="16"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </imageView>
+                                                <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4mW-nu-rAb" userLabel="Like Button">
+                                                    <rect key="frame" x="333" y="4" width="44" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="44" id="Lyd-R6-3qp"/>
+                                                        <constraint firstAttribute="height" constant="44" id="Rq3-GP-ARx"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" image="LikeImageOn"/>
+                                                </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xXj-1i-AwP" userLabel="Date Label">
+                                                    <rect key="frame" x="23.999999999999993" y="164" width="102.33333333333331" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" name="YP White (iOS)"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" name="YP Black (iOS)"/>
+                                            <constraints>
+                                                <constraint firstItem="4mW-nu-rAb" firstAttribute="top" secondItem="Lqr-tU-WPf" secondAttribute="top" id="251-mX-YIG"/>
+                                                <constraint firstItem="Lqr-tU-WPf" firstAttribute="trailing" secondItem="4mW-nu-rAb" secondAttribute="trailing" id="Adc-By-nLO"/>
+                                                <constraint firstAttribute="bottom" secondItem="Lqr-tU-WPf" secondAttribute="bottom" constant="4" id="C56-4A-BS6"/>
+                                                <constraint firstItem="Lqr-tU-WPf" firstAttribute="bottom" secondItem="xXj-1i-AwP" secondAttribute="bottom" constant="8" id="COq-3a-bHi"/>
+                                                <constraint firstItem="Lqr-tU-WPf" firstAttribute="leading" secondItem="37P-Q8-zgE" secondAttribute="leading" constant="16" id="I8o-cd-TsA"/>
+                                                <constraint firstItem="Lqr-tU-WPf" firstAttribute="top" secondItem="37P-Q8-zgE" secondAttribute="top" constant="4" id="LkW-H1-Rlw"/>
+                                                <constraint firstItem="Lqr-tU-WPf" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xXj-1i-AwP" secondAttribute="trailing" constant="8" id="RqQ-zj-pXr"/>
+                                                <constraint firstItem="xXj-1i-AwP" firstAttribute="leading" secondItem="Lqr-tU-WPf" secondAttribute="leading" constant="8" id="U6h-JJ-gR8"/>
+                                                <constraint firstAttribute="trailing" secondItem="Lqr-tU-WPf" secondAttribute="trailing" constant="16" id="zPj-rk-gJ3"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="cellImage" destination="Lqr-tU-WPf" id="iSz-qX-muY"/>
+                                            <outlet property="dateLabel" destination="xXj-1i-AwP" id="ICL-yf-69e"/>
+                                            <outlet property="likeButton" destination="4mW-nu-rAb" id="vte-E3-DLq"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="esZ-N6-BVe"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="htr-LY-Eqx"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" name="YP Black (iOS)"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="klR-ze-Dne" secondAttribute="trailing" id="6fE-8n-SQ2"/>
+                            <constraint firstItem="klR-ze-Dne" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="BKe-us-sbS"/>
+                            <constraint firstAttribute="bottom" secondItem="klR-ze-Dne" secondAttribute="bottom" id="o1C-9J-wTV"/>
+                            <constraint firstItem="klR-ze-Dne" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="u8K-36-CP4"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="klR-ze-Dne" id="82T-Em-ws0"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="46.564885496183201" y="-2.1126760563380285"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="0" width="1600" height="1059"/>
+        <image name="LikeImageOn" width="42" height="42"/>
+        <namedColor name="YP Black (iOS)">
+            <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YP White (iOS)">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>
