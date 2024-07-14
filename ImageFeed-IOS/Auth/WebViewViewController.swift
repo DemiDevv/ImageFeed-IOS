@@ -18,18 +18,9 @@ final class WebViewViewController: UIViewController {
         super.viewDidLoad()
 
         webView.navigationDelegate = self
+        
+        loadWebView()
 
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: accessKey),
-            URLQueryItem(name: "redirect_uri", value: redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: accessScope)
-        ]
-        let url = urlComponents.url!
-
-        let request = URLRequest(url: url)
-        webView.load(request)
     }
 
     @IBAction private func didTapBackButton(_ sender: Any?) {
@@ -68,11 +59,9 @@ final class WebViewViewController: UIViewController {
 }
 
 extension WebViewViewController: WKNavigationDelegate {
-    func webView(
-        _ webView: WKWebView,
+    func webView(_ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-    ) {
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
@@ -93,6 +82,25 @@ extension WebViewViewController: WKNavigationDelegate {
         } else {
             return nil
         }
+    }
+    
+    
+}
+
+private extension WebViewViewController {
+    func loadWebView() {
+        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: Constants.accessScope)
+        ]
+        guard let url = urlComponents.url else { return }
+
+        let request = URLRequest(url: url)
+        webView.load(request)
+
     }
 }
 
