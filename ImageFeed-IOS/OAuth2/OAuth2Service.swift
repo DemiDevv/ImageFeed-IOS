@@ -10,7 +10,7 @@ final class OAuth2Service {
             return
         }
 
-        URLSession.shared.data(for: request) { result in
+    let task = URLSession.shared.data(for: request) { result in
             switch result {
             case .success(let data):
                 do {
@@ -38,6 +38,7 @@ final class OAuth2Service {
                 completion(.failure(error))
             }
         }
+        task.resume()
     }
     
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
