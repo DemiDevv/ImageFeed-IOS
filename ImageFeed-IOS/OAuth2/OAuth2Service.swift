@@ -1,6 +1,10 @@
 import UIKit
 
 final class OAuth2Service {
+    
+    static let shared = OAuth2Service()
+    
+    private init() {}
 
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
@@ -41,7 +45,7 @@ final class OAuth2Service {
         task.resume()
     }
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest? {
+    private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard let baseURL = URL(string: "https://unsplash.com") else {
             return nil
         }

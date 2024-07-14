@@ -2,15 +2,15 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    private var oAuthTokenStorage = OAuth2TokenStorage.shared
-    private var oAuthService = OAuth2Service()
+    private let oAuthTokenStorage = OAuth2TokenStorage.shared
+    private let oAuthService = OAuth2Service.shared
     
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = oAuthTokenStorage.token {
+        if oAuthTokenStorage.token != nil {
             switchToTabBarController()
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
@@ -50,6 +50,7 @@ extension SplashViewController {
                 return
             }
             viewController.delegate = self
+            navigationController.modalPresentationStyle = .fullScreen
         } else {
             super.prepare(for: segue, sender: sender)
         }
