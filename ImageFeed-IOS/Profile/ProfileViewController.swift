@@ -11,13 +11,21 @@ final class ProfileViewController: UIViewController {
     private let userNameLabel = UILabel()
     private let descriptionLabel = UILabel()
     
+    private var profile: Profile = Profile(
+        username: "ekaterina_nov",
+        name: "Екатерина Новикова",
+        loginName: "@ekaterina_nov",
+        bio: "Hello, world!"
+    )
+    
+    private let profileService = ProfileService.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         profileViewCreated()
-        fetchProfileData()
+        updateProfileDetailsIfNeeded()
     }
-    
     func profileViewCreated() {
         imageViewProfile.image = UIImage(named: "PhotoImage")
         imageViewProfile.tintColor = .red
@@ -63,13 +71,13 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.leadingAnchor.constraint(equalTo: imageViewProfile.leadingAnchor).isActive = true
     }
     
-    private func fetchProfileData() {
+    private func updateProfileData() {
         guard let token = OAuth2TokenStorage.shared.token else {
             print("Error: No token available")
             return
         }
         
-        ProfileService.shared.fetchProfile(token) { [weak self] result in
+        profileService.fetchProfile(token) { [weak self] result in
             switch result {
             case .success(let profile):
                 DispatchQueue.main.async {
@@ -82,6 +90,36 @@ final class ProfileViewController: UIViewController {
             }
         }
     }
+    
+    private func updateProfileDetailsIfNeeded() {
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        } else {
+            guard let token = tokenStorage.token else {
+                print("Error: No token available")
+                return
+            }
+            profileService.fetchProfile(token) { [weak self] result in
+                switch result {
+                case .success(let profile):
+                    DispatchQueue.main.async {
+                        self?.updateProfileDetails(profile: profile)
+                    }
+                case .failure(let error):
+                    print("Failed to fetch profile: \(error.localizedDescription)")
+                }
+                
+            }
+        }
+    }
+    
+    func updateProfileDetails(profile: Profile) {
+        self.profile = profile
+        fioLabel.text = profile.name
+        userNameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+
     
     @objc private func didTapButton() {
         
