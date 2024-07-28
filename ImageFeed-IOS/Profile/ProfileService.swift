@@ -5,6 +5,7 @@ enum ProfileServiceError: Error {
     case invalidURL
     case noData
     case decodingError
+    case missingProfileImageURL
 }
 
 struct Profile: Codable {
@@ -33,8 +34,6 @@ final class ProfileService {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastToken: String?
-    
-    private let fetchQueue = DispatchQueue(label: "com.profileService.fetchQueue")
 
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         
@@ -90,12 +89,12 @@ final class ProfileService {
     }
 
     private func makeProfileRequest(token: String) -> URLRequest? {
-        guard let baseURL = URL(string: "https://unsplash.com") else {
+        guard let baseURL = URL(string: "https://api.unsplash.com") else {
             assertionFailure("Failed to create URL")
             return nil
         }
         
-        guard let url = URL(string: "/profile", relativeTo: baseURL) else {
+        guard let url = URL(string: "/me", relativeTo: baseURL) else {
             return nil
         }
         
@@ -104,5 +103,6 @@ final class ProfileService {
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
+
 
 }

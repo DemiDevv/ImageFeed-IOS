@@ -29,7 +29,7 @@ final class OAuth2Service {
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
-        
+            //
         let task = URLSession.shared.data(for: request) { result in
             DispatchQueue.main.async {
                 switch result {

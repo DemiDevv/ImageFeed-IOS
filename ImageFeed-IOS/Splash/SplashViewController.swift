@@ -5,6 +5,7 @@ final class SplashViewController: UIViewController {
     private let oAuthTokenStorage = OAuth2TokenStorage.shared
     private let oAuthService = OAuth2Service.shared
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     
@@ -16,7 +17,6 @@ final class SplashViewController: UIViewController {
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -63,35 +63,49 @@ extension SplashViewController: AuthViewControllerDelegate {
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             self.fetchOAuthToken(code)
-            self.fetchProfile(code)
         }
     }
     
-    private func fetchProfile(_ token: String) {
-        UIBlockingProgressHUD.show()
-        ProfileService.shared.fetchProfile(token) { [weak self] result in
-            UIBlockingProgressHUD.dismiss()
-            
+    private func fetchOAuthToken(_ code: String) {
+        oAuthService.fetchOAuthToken(code) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
-            case .success:
-                self.switchToTabBarController()
+            case .success(let token):
+                self.fetchProfile(token)
             case .failure:
+                //TODO: LATER
                 break
             }
         }
     }
 
-    private func fetchOAuthToken(_ code: String) {
-        oAuthService.fetchOAuthToken(code) { [weak self] result in
+    private func fetchProfile(_ token: String) {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let profile):
+                self.fetchProfileImage(username: profile.username)
+            case .failure:
+                break
+            }
+        }
+    }
+    
+    private func fetchProfileImage(username: String) {
+        profileImageService.fetchProfileImageURL(username: username) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success:
+            case .success(let imageURL):
+                print("Profile image URL: \(imageURL)")
                 self.switchToTabBarController()
-            case .failure:
-                //TODO: LATER
-                break
+            case .failure(let error):
+                print("Failed to fetch profile image URL: \(error)")
+                // Handle error as needed
+                self.switchToTabBarController()
             }
         }
     }

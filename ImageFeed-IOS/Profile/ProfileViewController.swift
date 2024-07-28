@@ -10,6 +10,8 @@ final class ProfileViewController: UIViewController {
     private let fioLabel = UILabel()
     private let userNameLabel = UILabel()
     private let descriptionLabel = UILabel()
+    private let profileService = ProfileService.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     
     private var profile: Profile = Profile(
         username: "ekaterina_nov",
@@ -17,15 +19,33 @@ final class ProfileViewController: UIViewController {
         loginName: "@ekaterina_nov",
         bio: "Hello, world!"
     )
-    
-    private let profileService = ProfileService.shared
-    private let tokenStorage = OAuth2TokenStorage.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
         profileViewCreated()
         updateProfileDetailsIfNeeded()
     }
+    
+    private func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
+    }
+    
     func profileViewCreated() {
         imageViewProfile.image = UIImage(named: "PhotoImage")
         imageViewProfile.tintColor = .red
