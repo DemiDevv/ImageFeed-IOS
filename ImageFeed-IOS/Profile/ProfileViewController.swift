@@ -40,12 +40,23 @@ final class ProfileViewController: UIViewController {
         updateProfileDetailsIfNeeded()
     }
     
-    private func updateAvatar() {                                   // 8
+    private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        imageViewProfile.kf.setImage(with: url)
+        imageViewProfile.kf.setImage(with: url) { result in
+            switch result {
+            case .success(let value):
+                self.imageViewProfile.image = value.image
+                print(value.image)
+                print(value.cacheType)
+                print(value.source)
+            case .failure(let error):
+                print(error)
+            }
+            
+        }
     }
     
     func profileViewCreated() {

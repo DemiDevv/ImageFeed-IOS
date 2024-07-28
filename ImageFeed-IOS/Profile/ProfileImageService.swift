@@ -79,7 +79,7 @@ final class ProfileImageService {
             return nil
         }
         
-        guard let url = URL(string: "/users/\(username)", relativeTo: baseURL) else {
+        guard let url = URL(string: "/users/:\(username)", relativeTo: baseURL) else {
             return nil
         }
         
