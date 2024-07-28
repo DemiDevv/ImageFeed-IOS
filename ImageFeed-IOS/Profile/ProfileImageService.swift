@@ -38,16 +38,18 @@ final class ProfileImageService {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let userProfileResult):
-                    if let profileImageURL = userProfileResult.profileImage?.small {
-                        completion(.success(profileImageURL))
-                        NotificationCenter.default.post(
-                            name: ProfileImageService.didChangeNotification,
-                            object: self,
-                            userInfo: ["URL": profileImageURL]
-                        )
-                    } else {
+                    guard let profileImageURL = userProfileResult.profileImage?.small else {
                         completion(.failure(ProfileServiceError.missingProfileImageURL))
+                        return
                     }
+                    self?.avatarURL = profileImageURL
+                    completion(.success(profileImageURL))
+                    NotificationCenter.default.post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": profileImageURL]
+                    )
+                    
                 case .failure(let error):
                     if let networkError = error as? NetworkError {
                         switch networkError {

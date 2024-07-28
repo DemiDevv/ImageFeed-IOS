@@ -51,20 +51,13 @@ final class ProfileService {
             return
         }
         
-        let task = URLSession.shared.data(for: request) { result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileServiceResponseBody, Error>) in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let data):
-                    do {
-                        let decoder = JSONDecoder()
-                        let profileResult = try decoder.decode(ProfileServiceResponseBody.self, from: data)
+                case .success(let profileResult):
                         let profile = Profile(from: profileResult)
-                        self.profile = profile
+                        self?.profile = profile
                         completion(.success(profile))
-                    } catch {
-                        print("Error decoding profile response: \(error)")
-                        completion(.failure(ProfileServiceError.decodingError))
-                    }
                 case .failure(let error):
                     if let networkError = error as? NetworkError {
                         switch networkError {
@@ -80,8 +73,8 @@ final class ProfileService {
                     }
                     completion(.failure(error))
                 }
-                self.task = nil
-                self.lastToken = nil
+                self?.task = nil
+                self?.lastToken = nil
             }
         }
         self.task = task
