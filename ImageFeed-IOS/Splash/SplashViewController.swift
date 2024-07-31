@@ -9,6 +9,12 @@ final class SplashViewController: UIViewController {
     
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setUpSplashScreen()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -26,6 +32,30 @@ final class SplashViewController: UIViewController {
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
+    }
+    
+    private func setUpSplashScreen() {
+        let splashImageView = UIImageView()
+        splashImageView.translatesAutoresizingMaskIntoConstraints = false
+        splashImageView.image = UIImage(named: "lounch_screen_logo")
+        splashImageView.backgroundColor = UIColor.ypBlackIOS
+        view.addSubview(splashImageView)
+        splashImageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        splashImageView.widthAnchor.constraint(equalToConstant: 75).isActive = true
+        splashImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        splashImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+    }
+    private func showAuthViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+            print("Failed to instantiate AuthViewController")
+            return
+        }
+        authViewController.delegate = self
+        authViewController.modalPresentationStyle = .fullScreen
+        
+        present(authViewController, animated: true, completion: nil)
     }
 
     private func switchToTabBarController() {
@@ -87,7 +117,7 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else { return }
             
             switch result {
-            case .success(let profile):
+            case .success:
                 self.switchToTabBarController()
             case .failure:
                 break
