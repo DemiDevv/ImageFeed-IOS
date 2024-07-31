@@ -1,18 +1,18 @@
 import UIKit
-
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private let imageViewProfile = UIImageView()
     private let exitButton = UIButton.systemButton(
         with: UIImage(systemName: "ipad.and.arrow.forward")!,
         target: ProfileViewController.self,
         action: #selector(Self.didTapButton)
     )
+    private let imageViewProfile = UIImageView()
     private let fioLabel = UILabel()
     private let userNameLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private let tokenStorage = OAuth2TokenStorage.shared
     
     private var profile: Profile = Profile(
@@ -26,6 +26,8 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = UIColor.ypBlackIOS
+        
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ProfileImageService.didChangeNotification,
@@ -35,40 +37,22 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 self.updateAvatar()
             }
-        updateAvatar()
         profileViewCreated()
         updateProfileDetailsIfNeeded()
+        updateAvatar()
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        imageViewProfile.kf.setImage(with: url) { result in
-            switch result {
-            case .success(let value):
-                self.imageViewProfile.image = value.image
-                print(value.image)
-                print(value.cacheType)
-                print(value.source)
-            case .failure(let error):
-                print(error)
-            }
-            
-        }
-    }
-    
-    func profileViewCreated() {
-        imageViewProfile.image = UIImage(named: "PhotoImage")
+    private func profileViewCreated() {
+        imageViewProfile.image = UIImage(named: "")
         imageViewProfile.tintColor = .red
+        imageViewProfile.layer.cornerRadius = 35
+        imageViewProfile.layer.masksToBounds = true
         imageViewProfile.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageViewProfile)
         imageViewProfile.widthAnchor.constraint(equalToConstant: 70).isActive = true
         imageViewProfile.heightAnchor.constraint(equalToConstant: 70).isActive = true
         imageViewProfile.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         imageViewProfile.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        
         
         exitButton.setImage(UIImage(named: "ExitImage"), for: .normal)
         exitButton.tintColor = .ypRedIOS
@@ -79,7 +63,7 @@ final class ProfileViewController: UIViewController {
         exitButton.widthAnchor.constraint(equalToConstant: 24).isActive = true
         exitButton.centerYAnchor.constraint(equalTo: imageViewProfile.centerYAnchor).isActive = true
         
-        fioLabel.text = "Екатерина Новикова"
+        fioLabel.text = ""
         fioLabel.textColor = .ypWhiteIOS
         fioLabel.font = .systemFont(ofSize: 23, weight: .bold)
         fioLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +71,7 @@ final class ProfileViewController: UIViewController {
         fioLabel.topAnchor.constraint(equalTo: imageViewProfile.bottomAnchor, constant: 8).isActive = true
         fioLabel.leadingAnchor.constraint(equalTo: imageViewProfile.leadingAnchor).isActive = true
         
-        userNameLabel.text = "@ekaterina_nov"
+        userNameLabel.text = ""
         userNameLabel.textColor = .ypGrayIOS
         userNameLabel.font = .systemFont(ofSize: 13)
         userNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +79,7 @@ final class ProfileViewController: UIViewController {
         userNameLabel.topAnchor.constraint(equalTo: fioLabel.bottomAnchor, constant: 8).isActive = true
         userNameLabel.leadingAnchor.constraint(equalTo: imageViewProfile.leadingAnchor).isActive = true
         
-        descriptionLabel.text = "Hello, world!"
+        descriptionLabel.text = ""
         descriptionLabel.textColor = .ypWhiteIOS
         descriptionLabel.font = .systemFont(ofSize: 13)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -104,22 +88,20 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.leadingAnchor.constraint(equalTo: imageViewProfile.leadingAnchor).isActive = true
     }
     
-    private func updateProfileData() {
-        guard let token = OAuth2TokenStorage.shared.token else {
-            print("Error: No token available")
-            return
-        }
-        
-        profileService.fetchProfile(token) { [weak self] result in
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        imageViewProfile.kf.setImage(with: url, options: [.processor(processor)]) { result in
             switch result {
-            case .success(let profile):
-                DispatchQueue.main.async {
-                    self?.fioLabel.text = profile.name
-                    self?.userNameLabel.text = profile.loginName
-                    self?.descriptionLabel.text = profile.bio
-                }
+            case .success(let value):
+                print(value.image)
+                print(value.cacheType)
+                print(value.source)
             case .failure(let error):
-                print("Failed to fetch profile: \(error.localizedDescription)")
+                print(error)
             }
         }
     }
@@ -127,6 +109,7 @@ final class ProfileViewController: UIViewController {
     private func updateProfileDetailsIfNeeded() {
         if let profile = profileService.profile {
             updateProfileDetails(profile: profile)
+            fetchProfileImage(username: profile.username)
         } else {
             guard let token = tokenStorage.token else {
                 print("Error: No token available")
@@ -137,11 +120,24 @@ final class ProfileViewController: UIViewController {
                 case .success(let profile):
                     DispatchQueue.main.async {
                         self?.updateProfileDetails(profile: profile)
+                        self?.fetchProfileImage(username: profile.username)
                     }
                 case .failure(let error):
                     print("Failed to fetch profile: \(error.localizedDescription)")
                 }
-                
+            }
+        }
+    }
+    
+    private func fetchProfileImage(username: String) {
+        profileImageService.fetchProfileImageURL(username: username) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageURL):
+                print("Profile image URL: \(imageURL)")
+                self.updateAvatar()
+            case .failure(let error):
+                print("Failed to fetch profile image URL: \(error)")
             }
         }
     }
@@ -152,10 +148,8 @@ final class ProfileViewController: UIViewController {
         userNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
-
     
     @objc private func didTapButton() {
         
     }
 }
-

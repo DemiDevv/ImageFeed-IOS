@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ha2-aA-asw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ha2-aA-asw">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -13,7 +13,7 @@
         <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed_IOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagesListViewController" title="ImageList" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed_IOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -232,7 +232,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="HEH-9q-xeg">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Woz-SP-bIb" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Woz-SP-bIb" customClass="TabBarController" customModule="ImageFeed_IOS" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="BnA-gv-Iay">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -242,30 +242,10 @@
                             <color key="backgroundColor" name="YP Black (iOS)"/>
                         </tabBarAppearance>
                     </tabBar>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="36j-NZ-PYZ"/>
-                        <segue destination="z3D-Dj-70r" kind="relationship" relationship="viewControllers" id="uZP-k6-sSA"/>
-                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="G54-Wj-HmV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1170" y="335"/>
-        </scene>
-        <!--ProfileViewController-->
-        <scene sceneID="2cs-IV-bzm">
-            <objects>
-                <viewController title="ProfileViewController" id="z3D-Dj-70r" customClass="ProfileViewController" customModule="ImageFeed_IOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="ts4-I6-9tX">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="ozC-mk-D2m"/>
-                        <color key="backgroundColor" name="YP Black (iOS)"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="" image="TabProfileActive" id="2ak-op-8pk"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Cj7-vC-rSG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-326" y="683"/>
         </scene>
         <!--SingleImageViewController-->
         <scene sceneID="SXF-cy-vK4">
@@ -364,7 +344,6 @@
         <image name="LikeImageOn" width="42" height="42"/>
         <image name="SaveImage" width="51" height="51"/>
         <image name="TabEditorialActive" width="30" height="30"/>
-        <image name="TabProfileActive" width="30" height="30"/>
         <image name="UnsplashLogo" width="60" height="60"/>
         <namedColor name="YP Black (iOS)">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

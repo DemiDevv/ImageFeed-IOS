@@ -38,7 +38,7 @@ final class ProfileImageService {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let userProfileResult):
-                    guard let profileImageURL = userProfileResult.profileImage?.small else {
+                    guard let profileImageURL = userProfileResult.profileImage?.large else {
                         completion(.failure(ProfileServiceError.missingProfileImageURL))
                         return
                     }
@@ -79,7 +79,7 @@ final class ProfileImageService {
             return nil
         }
         
-        guard let url = URL(string: "/users/:\(username)", relativeTo: baseURL) else {
+        guard let url = URL(string: "/users/\(username)", relativeTo: baseURL) else {
             return nil
         }
         
