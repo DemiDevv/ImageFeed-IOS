@@ -43,7 +43,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func profileViewCreated() {
-        imageViewProfile.image = UIImage(named: "")
+        imageViewProfile.image = UIImage(named: "defaultProfileImage")
         imageViewProfile.tintColor = .red
         imageViewProfile.layer.cornerRadius = 35
         imageViewProfile.layer.masksToBounds = true
@@ -93,15 +93,13 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
-        imageViewProfile.kf.setImage(with: url, options: [.processor(processor)]) { result in
+        
+        imageViewProfile.kf.setImage(with: url) { result in
             switch result {
             case .success(let value):
-                print(value.image)
-                print(value.cacheType)
-                print(value.source)
+                print("Image: \(value.image); Image URL: \(value.source.url?.absoluteString ?? "")")
             case .failure(let error):
-                print(error)
+                print("Error: \(error)")
             }
         }
     }
