@@ -1,17 +1,12 @@
 import UIKit
-import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    var imageUrl: URL? {
+    var image: UIImage? {
         didSet {
-            guard isViewLoaded, let imageUrl = imageUrl else { return }
-            imageView.kf.setImage(
-                with: imageUrl,
-                placeholder: UIImage(named: "placeholderImage"),
-                options: [
-                    .transition(.fade(0.2))
-                ]
-            )
+            guard isViewLoaded, let image else { return }
+            imageView.image = image
+            imageView.frame.size = image.size
+            rescaleAndCenterImageInScrollView(image: image)
         }
     }
 
@@ -24,29 +19,24 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        if let imageUrl = imageUrl {
-            imageView.kf.setImage(
-                with: imageUrl,
-                placeholder: UIImage(named: "placeholderImage"),
-                options: [
-                    .transition(.fade(0.2))
-                ]
-            )
-        }
+        guard let image else { return }
+        imageView.image = image
+        imageView.frame.size = image.size
+        rescaleAndCenterImageInScrollView(image: image)
     }
     
     @IBAction func didTapShareButton(_ sender: Any) {
-        guard let image = imageView.image else { return }
+        guard let image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
             applicationActivities: nil
         )
         present(share, animated: true, completion: nil)
     }
-    
     @IBAction func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
@@ -65,9 +55,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
 }
-
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        imageView
     }
 }

@@ -4,7 +4,7 @@ import Kingfisher
 final class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     
-    private let imagesService = ImagesListService.shared
+    private let imagesListService = ImagesListService.shared
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -14,15 +14,13 @@ final class ImagesListViewController: UIViewController {
     }()
     var photos: [Photo] = [] {
         didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            updateTableViewAnimated()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imagesService.fetchPhotosNextPage()
+        imagesListService.fetchPhotosNextPage()
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
@@ -30,12 +28,19 @@ final class ImagesListViewController: UIViewController {
     }
     
     @objc private func didUpdatePhotos() {
-        DispatchQueue.main.async {
-            let startIndex = self.photos.count - 10
-            let indexPaths = (startIndex..<self.photos.count).map { IndexPath(row: $0, section: 0) }
-            self.tableView.performBatchUpdates({
-                self.tableView.insertRows(at: indexPaths, with: .automatic)
-            }, completion: nil)
+        photos = imagesListService.photos
+    }
+    
+    private func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imagesListService.photos.count
+        if oldCount != newCount {
+            let indexPaths = (oldCount..<newCount).map { i in
+                IndexPath(row: i, section: 0)
+            }
+            tableView.performBatchUpdates {
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
         }
     }
     
@@ -50,7 +55,7 @@ final class ImagesListViewController: UIViewController {
             }
             
             let photo = photos[indexPath.row]
-            viewController.imageUrl = URL(string: photo.largeImageURL)
+            viewController.image = UIImage(named: photo.largeImageURL)
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -70,16 +75,11 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         let photo = photos[indexPath.row]
         
-        DispatchQueue.main.async {
-            imageListCell.cellImage.kf.indicatorType = .activity
-            imageListCell.cellImage.kf.setImage(
-                with: URL(string: photo.thumbImageURL),
-                placeholder: UIImage(named: "placeholder_Image"),
-                options: [
-                    .transition(.fade(0.2))
-                ]
-            )
-        }
+        imageListCell.cellImage.kf.indicatorType = .activity
+        imageListCell.cellImage.kf.setImage(
+            with: URL(string: photo.thumbImageURL),
+            placeholder: UIImage(named: "placeholderImage")
+        )
         
         imageListCell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
 
@@ -91,25 +91,27 @@ extension ImagesListViewController: UITableViewDataSource {
 }
 
 extension ImagesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let photo = photos[indexPath.row]
-        let image = UIImage(named: photo.thumbImageURL)
+        guard let image = UIImage(named: photo.thumbImageURL) else {
+            return 200
+        }
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-        let imageWidth = image?.size.width ?? 0
+        let imageWidth = image.size.width
         let scale = imageViewWidth / imageWidth
-        let cellHeight = (image?.size.height ?? 0) * scale + imageInsets.top + imageInsets.bottom
+        let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         return cellHeight
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let lastRowIndex = tableView.numberOfRows(inSection: 0) - 1
         if indexPath.row == lastRowIndex {
-            imagesService.fetchPhotosNextPage()
+            imagesListService.fetchPhotosNextPage()
         }
     }
 }
