@@ -24,23 +24,22 @@ final class ImagesListViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        NotificationCenter.default.addObserver(self, selector: #selector(didUpdatePhotos), name: ImagesListService.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTableViewAnimated), name: ImagesListService.didChangeNotification, object: nil)
     }
     
-    @objc private func didUpdatePhotos() {
-        photos = imagesListService.photos
-    }
-    
-    private func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        if oldCount != newCount {
-            let indexPaths = (oldCount..<newCount).map { i in
-                IndexPath(row: i, section: 0)
+    @objc private func updateTableViewAnimated() {
+        DispatchQueue.main.async {
+            let oldCount = self.photos.count
+            let newCount = self.imagesListService.photos.count
+            if oldCount != newCount {
+                self.photos = self.imagesListService.photos
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                self.tableView.performBatchUpdates {
+                    self.tableView.insertRows(at: indexPaths, with: .automatic)
+                } completion: { _ in }
             }
-            tableView.performBatchUpdates {
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
         }
     }
     
@@ -78,7 +77,7 @@ extension ImagesListViewController: UITableViewDataSource {
         imageListCell.cellImage.kf.indicatorType = .activity
         imageListCell.cellImage.kf.setImage(
             with: URL(string: photo.thumbImageURL),
-            placeholder: UIImage(named: "placeholderImage")
+            placeholder: UIImage(named: "placeholder_Image")
         )
         
         imageListCell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())

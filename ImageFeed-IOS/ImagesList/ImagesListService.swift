@@ -71,12 +71,11 @@ final class ImagesListService {
             }
             
             guard let data = data else { return }
-            
-            self?.photos = Array(0..<10).map{_ in Photo(id: "", size: .zero, thumbImageURL: "", largeImageURL: "", isLiked: true)}
             do {
                 let photoResults = try JSONDecoder().decode([PhotoResult].self, from: data)
+                let newPhotos = photoResults.map { Photo(from: $0) }
                 DispatchQueue.main.async {
-                    self?.photos += photoResults.map { Photo(from: $0) }
+                    self?.photos += newPhotos
                     self?.lastLoadedPage = (number: nextPage, total: photoResults.count)
                 }
             } catch {
@@ -114,4 +113,67 @@ final class ImagesListService {
         return request
     }
     
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        let httpMethod = isLike ? "POST" : "DELETE"
+        
+        guard let request = makeLikeRequest(photoId: photoId, httpMethod: httpMethod) else {
+            completion(.failure(NSError(domain: "Invalid request", code: 0, userInfo: nil)))
+            return
+        }
+        
+        let task = urlSession.dataTask(with: request) { [weak self] data, response, error in
+            defer {
+                self?.task = nil
+            }
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard let index = self.photos.firstIndex(where: { $0.id == photoId }) else {
+                    completion(.failure(NSError(domain: "Photo not found", code: 0, userInfo: nil)))
+                    return
+                }
+                
+                let photo = self.photos[index]
+                
+                let updatedPhoto = Photo(
+                    id: photo.id,
+                    size: photo.size,
+                    createdAt: photo.createdAt,
+                    welcomeDescription: photo.welcomeDescription,
+                    thumbImageURL: photo.thumbImageURL,
+                    largeImageURL: photo.largeImageURL,
+                    isLiked: !photo.isLiked
+                )
+                
+                self.photos[index] = updatedPhoto
+                completion(.success(()))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    private func makeLikeRequest(photoId: String, httpMethod: String) -> URLRequest? {
+        guard let baseURL = URL(string: "https://api.unsplash.com") else {
+            assertionFailure("Failed to create base URL")
+            return nil
+        }
+        
+        guard let url = URL(string: "/photos/\(photoId)/like", relativeTo: baseURL) else {
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = httpMethod
+        request.addValue("Bearer \(OAuth2TokenStorage.shared.token ?? "")", forHTTPHeaderField: "Authorization")
+        return request
+    }
 }
