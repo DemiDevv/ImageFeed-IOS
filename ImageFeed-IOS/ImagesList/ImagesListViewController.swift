@@ -54,7 +54,7 @@ final class ImagesListViewController: UIViewController {
             }
             
             let photo = photos[indexPath.row]
-            viewController.image = UIImage(named: photo.largeImageURL)
+            viewController.fullImageURL = photo.fullImageURL
         } else {
             super.prepare(for: segue, sender: sender)
         }

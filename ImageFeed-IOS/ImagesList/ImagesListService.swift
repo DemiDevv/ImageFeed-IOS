@@ -1,13 +1,14 @@
 import UIKit
 
 struct Photo {
-    internal init(id: String, size: CGSize, createdAt: Date? = nil, welcomeDescription: String? = nil, thumbImageURL: String, largeImageURL: String, isLiked: Bool) {
+    internal init(id: String, size: CGSize, createdAt: Date? = nil, welcomeDescription: String? = nil, thumbImageURL: String, largeImageURL: String, fullImageURL: String, isLiked: Bool) {
         self.id = id
         self.size = size
         self.createdAt = createdAt
         self.welcomeDescription = welcomeDescription
         self.thumbImageURL = thumbImageURL
         self.largeImageURL = largeImageURL
+        self.fullImageURL = fullImageURL
         self.isLiked = isLiked
     }
     
@@ -17,6 +18,7 @@ struct Photo {
     let welcomeDescription: String?
     let thumbImageURL: String
     let largeImageURL: String
+    let fullImageURL: String
     let isLiked: Bool
     
     init(from photoResult: PhotoResult) {
@@ -25,11 +27,10 @@ struct Photo {
         self.createdAt = ISO8601DateFormatter().date(from: photoResult.createdAt)
         self.welcomeDescription = photoResult.description
         self.thumbImageURL = photoResult.urls.thumb
-        self.largeImageURL = photoResult.urls.full
+        self.largeImageURL = photoResult.urls.regular
+        self.fullImageURL = photoResult.urls.full
         self.isLiked = photoResult.likedByUser
     }
-    
-    
 }
 
 final class ImagesListService {
@@ -48,6 +49,10 @@ final class ImagesListService {
     private var task: URLSessionTask?
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
+    
+    func clearImagesList() {
+        photos.removeAll()
+    }
     
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
@@ -150,6 +155,7 @@ final class ImagesListService {
                     welcomeDescription: photo.welcomeDescription,
                     thumbImageURL: photo.thumbImageURL,
                     largeImageURL: photo.largeImageURL,
+                    fullImageURL: photo.fullImageURL,
                     isLiked: !photo.isLiked
                 )
                 

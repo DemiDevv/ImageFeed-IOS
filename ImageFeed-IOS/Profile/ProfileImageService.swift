@@ -6,6 +6,7 @@ struct UserResult: Codable {
     enum CodingKeys: String, CodingKey {
         case profileImage = "profile_image"
     }
+    
 }
 
 final class ProfileImageService {
@@ -19,6 +20,10 @@ final class ProfileImageService {
     private var task: URLSessionTask?
     private var lastUsername: String?
 
+    func clearProfileImage() {
+        avatarURL = nil
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastUsername != username else {
@@ -88,4 +93,6 @@ final class ProfileImageService {
         request.httpMethod = "GET"
         return request
     }
+    
+    
 }

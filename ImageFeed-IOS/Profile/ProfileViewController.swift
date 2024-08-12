@@ -2,11 +2,14 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private let exitButton = UIButton.systemButton(
-        with: UIImage(systemName: "ipad.and.arrow.forward")!,
-        target: ProfileViewController.self,
-        action: #selector(Self.didTapButton)
-    )
+    private let exitButton: UIButton = {
+        let button = UIButton.systemButton(
+            with: UIImage(systemName: "ipad.and.arrow.forward")!,
+            target: nil,
+            action: nil
+        )
+        return button
+    }()
     private let imageViewProfile = UIImageView()
     private let fioLabel = UILabel()
     private let userNameLabel = UILabel()
@@ -27,6 +30,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.ypBlackIOS
+        exitButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -148,6 +152,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func didTapButton() {
-        
+        ProfileLogoutService.shared.logout()
     }
+
 }
