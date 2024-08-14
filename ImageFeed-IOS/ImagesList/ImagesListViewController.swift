@@ -96,7 +96,7 @@ extension ImagesListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let photo = photos[indexPath.row]
-        guard let image = UIImage(named: photo.thumbImageURL) else {
+        guard let image = ImageCache.default.retrieveImageInMemoryCache(forKey: photo.thumbImageURL) else {
             return 200
         }
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)

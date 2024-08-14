@@ -39,13 +39,8 @@ final class ImagesListService {
     private init() {}
     
     private let urlSession = URLSession.shared
-    private(set) var photos: [Photo] = [] {
-        didSet {
-            NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
-        }
-    }
+    private(set) var photos: [Photo] = []
     private var lastLoadedPage: (number: Int, total: Int)?
-    private var isLoading: Bool = false
     private var task: URLSessionTask?
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
@@ -61,7 +56,6 @@ final class ImagesListService {
         let nextPage = (lastLoadedPage?.number ?? 0) + 1
         
         guard let request = makePhotosRequest(page: nextPage) else {
-            isLoading = false
             return
         }
         
@@ -82,6 +76,7 @@ final class ImagesListService {
                 DispatchQueue.main.async {
                     self?.photos += newPhotos
                     self?.lastLoadedPage = (number: nextPage, total: photoResults.count)
+                    NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
                 }
             } catch {
                 print("Error decoding photos: \(error)")
