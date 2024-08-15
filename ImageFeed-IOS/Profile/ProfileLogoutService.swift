@@ -8,6 +8,7 @@ final class ProfileLogoutService {
     private init() { }
 
     func logout() {
+        OAuth2TokenStorage.shared.token = nil
         cleanCookies()
         clearUserData()
         switchToAuthViewController()
@@ -33,10 +34,7 @@ final class ProfileLogoutService {
             assertionFailure("Invalid window configuration")
             return
         }
-
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController")
-        window.rootViewController = authViewController
+        window.rootViewController = SplashViewController()
         window.makeKeyAndVisible()
         
         UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: {}, completion: nil)
