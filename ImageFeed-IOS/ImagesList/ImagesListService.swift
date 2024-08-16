@@ -99,12 +99,8 @@ final class ImagesListService {
     }
     
     private func makePhotosRequest(page: Int = 1, perPage: Int = 10, orderBy: String = "latest") -> URLRequest? {
-        guard let baseURL = URL(string: "https://api.unsplash.com") else {
-            assertionFailure("Failed to create base URL")
-            return nil
-        }
         
-        guard let url = URL(string: "/photos", relativeTo: baseURL) else {
+        guard let url = URL(string: "/photos", relativeTo: Constants.defaultBaseURL) else {
             return nil
         }
         
