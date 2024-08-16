@@ -11,7 +11,6 @@ final class ProfileLogoutService {
         OAuth2TokenStorage.shared.token = nil
         cleanCookies()
         clearUserData()
-        switchToAuthViewController()
     }
 
     private func cleanCookies() {
@@ -29,14 +28,4 @@ final class ProfileLogoutService {
         ImagesListService.shared.clearImagesList()
     }
 
-    private func switchToAuthViewController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        window.rootViewController = SplashViewController()
-        window.makeKeyAndVisible()
-        
-        UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: {}, completion: nil)
-    }
 }

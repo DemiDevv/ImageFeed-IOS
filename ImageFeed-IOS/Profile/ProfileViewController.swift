@@ -150,12 +150,23 @@ final class ProfileViewController: UIViewController {
         userNameLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
+    private func switchToAuthViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        window.rootViewController = SplashViewController()
+        window.makeKeyAndVisible()
+        
+        UIView.transition(with: window, duration: 0.5, options: .transitionFlipFromLeft, animations: {}, completion: nil)
+    }
     
     @objc private func didTapButton() {
         let alert = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
         
         let logoutAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
             ProfileLogoutService.shared.logout()
+            self?.switchToAuthViewController()
         }
         let cancelAction = UIAlertAction(title: "Нет", style: .cancel, handler: nil)
         
