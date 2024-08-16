@@ -1,6 +1,11 @@
 import UIKit
 
 struct Photo {
+    private static let dateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        return formatter
+    }()
+    
     internal init(id: String, size: CGSize, createdAt: Date? = nil, welcomeDescription: String? = nil, thumbImageURL: String, largeImageURL: String, fullImageURL: String, isLiked: Bool) {
         self.id = id
         self.size = size
@@ -21,16 +26,23 @@ struct Photo {
     let fullImageURL: String
     let isLiked: Bool
     
-    init(from photoResult: PhotoResult) {
+    init(from photoResult: PhotoResult) throws {
         self.id = photoResult.id
         self.size = CGSize(width: photoResult.width, height: photoResult.height)
-        self.createdAt = ISO8601DateFormatter().date(from: photoResult.createdAt)
+        
+        if let date = Photo.dateFormatter.date(from: photoResult.createdAt) {
+            self.createdAt = date
+        } else {
+            throw NSError(domain: "Invalid date format", code: 0, userInfo: nil)
+        }
+        
         self.welcomeDescription = photoResult.description
         self.thumbImageURL = photoResult.urls.thumb
         self.largeImageURL = photoResult.urls.regular
         self.fullImageURL = photoResult.urls.full
         self.isLiked = photoResult.likedByUser
     }
+
 }
 
 final class ImagesListService {
@@ -72,7 +84,7 @@ final class ImagesListService {
             guard let data = data else { return }
             do {
                 let photoResults = try JSONDecoder().decode([PhotoResult].self, from: data)
-                let newPhotos = photoResults.map { Photo(from: $0) }
+                let newPhotos = try photoResults.map { try Photo(from: $0) }
                 DispatchQueue.main.async {
                     self?.photos += newPhotos
                     self?.lastLoadedPage = (number: nextPage, total: photoResults.count)
