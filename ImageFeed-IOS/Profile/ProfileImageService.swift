@@ -6,6 +6,7 @@ struct UserResult: Codable {
     enum CodingKeys: String, CodingKey {
         case profileImage = "profile_image"
     }
+    
 }
 
 final class ProfileImageService {
@@ -19,6 +20,10 @@ final class ProfileImageService {
     private var task: URLSessionTask?
     private var lastUsername: String?
 
+    func clearProfileImage() {
+        avatarURL = nil
+    }
+    
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastUsername != username else {
@@ -74,12 +79,8 @@ final class ProfileImageService {
     }
 
     private func makeProfileImageRequest(username: String) -> URLRequest? {
-        guard let baseURL = URL(string: "https://api.unsplash.com") else {
-            assertionFailure("Failed to create URL")
-            return nil
-        }
         
-        guard let url = URL(string: "/users/\(username)", relativeTo: baseURL) else {
+        guard let url = URL(string: "/users/\(username)", relativeTo: Constants.defaultBaseURL) else {
             return nil
         }
         
@@ -88,4 +89,6 @@ final class ProfileImageService {
         request.httpMethod = "GET"
         return request
     }
+    
+    
 }
