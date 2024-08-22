@@ -6,6 +6,12 @@ protocol AuthHelperProtocol {
 }
 
 final class AuthHelper: AuthHelperProtocol {
+    let configuration: AuthConfiguration
+
+    init(configuration: AuthConfiguration = .standard) {
+        self.configuration = configuration
+    }
+    
     func authRequest() -> URLRequest? {
         guard let url = authURL() else { return nil }
         
@@ -37,11 +43,5 @@ final class AuthHelper: AuthHelperProtocol {
         } else {
             return nil
         }
-    }
-    
-    let configuration: AuthConfiguration
-
-    init(configuration: AuthConfiguration = .standard) {
-        self.configuration = configuration
     }
 }
