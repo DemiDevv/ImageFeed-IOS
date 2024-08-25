@@ -23,7 +23,12 @@ extension Profile {
     }
 }
 
-final class ProfileService {
+protocol ProfileServiceProtocol {
+    var profile: Profile? { get }
+    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void)
+}
+
+final class ProfileService: ProfileServiceProtocol {
     
     static let shared = ProfileService()
     

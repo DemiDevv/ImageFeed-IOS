@@ -9,10 +9,16 @@ protocol ProfileViewPresenterProtocol {
 
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let tokenStorage = OAuth2TokenStorage.shared
+    init(view: ProfileViewControllerProtocol) {
+        self.view = view
+    }
+    
+    private let profileService: ProfileServiceProtocol = ProfileService.shared
+    private let profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared
+    private let tokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage.shared
 
+    
+    
     func viewDidLoad() {
         view?.profileViewCreated()
         updateProfileDetailsIfNeeded()

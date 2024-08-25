@@ -39,7 +39,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let profilePresenter = ProfileViewPresenter()
+        let profilePresenter = ProfileViewPresenter(view: self)
         self.presenter = profilePresenter
         profilePresenter.view = self
 
