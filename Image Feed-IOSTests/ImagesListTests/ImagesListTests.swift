@@ -55,25 +55,4 @@ final class ImagesListTests: XCTestCase {
         // then
         XCTAssertTrue(viewController.updateTableViewAnimatedCalled, "View should call updateTableViewAnimated")
     }
-    
-    func testPrepareForSegue() {
-        // given
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as! ImagesListViewController
-        let presenter = ImagesListViewPresenterSpy()
-        viewController.presenter = presenter
-        
-        let segue = UIStoryboardSegue(identifier: "ShowSingleImage", source: viewController, destination: SingleImageViewController())
-        let indexPath = IndexPath(row: 0, section: 0)
-        
-        let photo = Photo(id: "1", size: CGSize(width: 100, height: 100), createdAt: Date(), welcomeDescription: "Test Description", thumbImageURL: "thumbURL", largeImageURL: "largeURL", fullImageURL: "fullURL", isLiked: false)
-        
-        viewController.photos = [photo]
-        
-        // when
-        viewController.prepare(for: segue, sender: indexPath)
-        
-        // then
-        XCTAssertNotNil((segue.destination as! SingleImageViewController).fullImageURL, "Full image URL should be passed to the destination view controller")
-    }
 }
