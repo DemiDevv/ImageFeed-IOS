@@ -44,6 +44,6 @@ final class ProfileViewTests: XCTestCase {
         viewController.updateProfileDetails(profile: profile)
         // then
         XCTAssertNotNil(viewController.presenter)
-        XCTAssertTrue(viewController.setProfileDataCalled)
+        XCTAssertTrue(viewController.updateProfileDetailsCalled)
     }
 }

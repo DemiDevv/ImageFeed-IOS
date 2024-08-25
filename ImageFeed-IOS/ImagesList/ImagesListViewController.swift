@@ -27,16 +27,17 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
 
     override func loadView() {
         super.loadView()
-        
-        presenter = ImagesListViewPresenter(view: self)
+        if presenter == nil {
+            presenter = ImagesListViewPresenter(view: self)
+        }
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.dataSource = self
         tableView.delegate = self
-        
         tableView.rowHeight = 200
         
         presenter?.viewDidLoad()

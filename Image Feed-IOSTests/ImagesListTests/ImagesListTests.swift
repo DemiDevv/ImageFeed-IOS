@@ -2,27 +2,20 @@ import XCTest
 @testable import ImageFeed_IOS
 
 final class ImagesListTests: XCTestCase {
-    
-//    func testViewControllerCallsViewDidLoad() {
-//        // given
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        guard let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as? ImagesListViewController else {
-//            XCTFail("Could not instantiate ImagesListViewController from storyboard")
-//            return
-//        }
-//        
-//        let presenter = ImagesListViewPresenterSpy()
-//        viewController.presenter = presenter
-//        presenter.view = viewController
-//        
-//        // when
-//        viewController.loadViewIfNeeded()
-//        
-//        // then
-//        XCTAssertTrue(presenter.viewDidLoadCalled, "Presenter's viewDidLoad should be called")
-//    }
-
-
+    func testViewControllerCallsViewDidLoad() {
+        //given
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as! ImagesListViewController
+        let presenter = ImagesListViewPresenterSpy()
+        viewController.presenter = presenter
+        presenter.view = viewController
+        
+        //when
+        _ = viewController.view
+        
+        //then
+        XCTAssertTrue(presenter.viewDidLoadCalled)
+    }
     
     func testPresenterFetchPhotosNextPage() {
         // given

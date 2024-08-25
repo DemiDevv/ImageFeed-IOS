@@ -5,13 +5,13 @@ import Foundation
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     
     var presenter: ImageFeed_IOS.ProfileViewPresenterProtocol?
-    var setProfileDataCalled: Bool = false
+    var updateProfileDetailsCalled: Bool = false
     
     func profileViewCreated() {
     }
     
     func updateProfileDetails(profile: ImageFeed_IOS.Profile) {
-        setProfileDataCalled = true
+        updateProfileDetailsCalled = true
     }
     
     func updateAvatarImage(with url: URL) {
