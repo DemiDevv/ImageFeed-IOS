@@ -1,6 +1,6 @@
 import UIKit
 
-protocol ImagesListViewPresenterProtocol: AnyObject {
+protocol ImagesListViewPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
     var photos: [Photo] { get }
     func viewDidLoad()
@@ -21,7 +21,16 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     }
     
     func viewDidLoad() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateTableViewAnimated),
+            name: ImagesListService.didChangeNotification,
+            object: nil
+        )
         fetchPhotosNextPage()
+    }
+    @objc func updateTableViewAnimated() {
+        view?.updateTableViewAnimated()
     }
     
     func fetchPhotosNextPage() {

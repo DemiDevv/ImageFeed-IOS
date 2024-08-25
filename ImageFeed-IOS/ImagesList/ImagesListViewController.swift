@@ -3,18 +3,21 @@ import Kingfisher
 
 protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListViewPresenterProtocol? { get set }
+    func updateTableViewAnimated()
 }
 
 final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
     @IBOutlet private var tableView: UITableView!
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
         return formatter
     }()
+    
     var photos: [Photo] = [] {
         didSet {
             updateTableViewAnimated()
@@ -22,22 +25,24 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     }
     var presenter: ImagesListViewPresenterProtocol?
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        let imagesListPresenter = ImagesListViewPresenter(view: self)
-        imagesListPresenter.view = self
-        self.presenter = imagesListPresenter
-
-        presenter?.viewDidLoad()
-
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 200
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateTableViewAnimated), name: ImagesListService.didChangeNotification, object: nil)
+    override func loadView() {
+        super.loadView()
+        
+        presenter = ImagesListViewPresenter(view: self)
     }
     
-    @objc private func updateTableViewAnimated() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        tableView.rowHeight = 200
+        
+        presenter?.viewDidLoad()
+    }
+    
+    @objc internal func updateTableViewAnimated() {
         DispatchQueue.main.async {
             let oldCount = self.photos.count
             let newCount = self.presenter?.photos.count ?? 0
