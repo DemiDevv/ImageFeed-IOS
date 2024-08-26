@@ -44,6 +44,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         profilePresenter.view = self
 
         self.view.backgroundColor = UIColor.ypBlackIOS
+        exitButton.accessibilityIdentifier = "ExitButton"
         exitButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
 
         presenter?.viewDidLoad()

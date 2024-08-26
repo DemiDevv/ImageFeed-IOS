@@ -41,6 +41,7 @@
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4mW-nu-rAb" userLabel="Like Button">
                                                     <rect key="frame" x="354" y="4" width="44" height="44"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="LikeButton"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="Lyd-R6-3qp"/>
                                                         <constraint firstAttribute="height" constant="44" id="Rq3-GP-ARx"/>
@@ -123,6 +124,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i5F-2d-HKW" userLabel="loginButton">
                                 <rect key="frame" x="16" y="724" width="382" height="48"/>
                                 <color key="backgroundColor" name="YP White (iOS)"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="pka-fC-LTh"/>
                                 </constraints>
@@ -166,7 +168,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LZ5-AO-M35">
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LZ5-AO-M35" userLabel="UnsplashWebView">
                                 <rect key="frame" x="0.0" y="92" width="414" height="804"/>
                                 <color key="backgroundColor" name="YP White (iOS)"/>
                                 <wkWebViewConfiguration key="configuration">
@@ -181,6 +183,7 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9nD-Wk-e3w"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <accessibility key="accessibilityConfiguration" identifier="UnsplashWebView"/>
                         <constraints>
                             <constraint firstItem="9nD-Wk-e3w" firstAttribute="trailing" secondItem="U1D-kt-v8B" secondAttribute="trailing" id="Klx-yO-WCH"/>
                             <constraint firstItem="LZ5-AO-M35" firstAttribute="leading" secondItem="qSQ-za-8yf" secondAttribute="leading" id="Ltk-kf-VAO"/>
@@ -243,6 +246,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="46i-jH-u0j">
                                 <rect key="frame" x="8" y="8" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="NabBackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="8KZ-4G-6J6"/>
                                     <constraint firstAttribute="height" constant="48" id="kL6-HT-YZC"/>
