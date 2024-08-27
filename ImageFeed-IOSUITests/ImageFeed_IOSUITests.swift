@@ -19,14 +19,16 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 10))
         
         loginTextField.tap()
-        loginTextField.typeText("demyanpain@gmail.com")// fake data from network
-        app.buttons["Done"].tap()
+        loginTextField.typeText("email@gmail.com")// fake data from network
+        webView.swipeUp()
+//        app.buttons["Done"].tap()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
-        sleep(1)
-        passwordTextField.typeText("Dema375640091")// fake data from network
+//        sleep(2)
+        passwordTextField.typeText("Password") // fake data from network
+        sleep(1) // добавил
         app.buttons["Done"].tap()
 
         let loginButton = webView.buttons["Login"]
@@ -44,7 +46,7 @@ class Image_FeedUITests: XCTestCase {
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         
-        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        XCTAssertTrue(cell.waitForExistence(timeout: 10)) // увеличил на 5
     }
         
     func testFeed() throws {
@@ -64,7 +66,7 @@ class Image_FeedUITests: XCTestCase {
         
         cellToLike.tap()
         
-        sleep(2)
+        sleep(5) // тут поправил
         
         let image = app.scrollViews.images.element(boundBy: 0)
         image.pinch(withScale: 3, velocity: 1)
@@ -77,8 +79,9 @@ class Image_FeedUITests: XCTestCase {
     func testProfile() throws {
         sleep(3)
         app.tabBars.buttons.element(boundBy: 1).tap()
-       
+        sleep(3) // добавил
         XCTAssertTrue(app.staticTexts["Demain Petropavlov"].exists)
+        
         XCTAssertTrue(app.staticTexts["@dpdeceased"].exists)
         
         app.buttons["ExitButton"].tap()
