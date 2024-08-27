@@ -21,14 +21,12 @@ class Image_FeedUITests: XCTestCase {
         loginTextField.tap()
         loginTextField.typeText("email@gmail.com")// fake data from network
         webView.swipeUp()
-//        app.buttons["Done"].tap()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
-//        sleep(2)
         passwordTextField.typeText("Password") // fake data from network
-        sleep(1) // добавил
+        sleep(1)
         app.buttons["Done"].tap()
 
         let loginButton = webView.buttons["Login"]
@@ -46,7 +44,7 @@ class Image_FeedUITests: XCTestCase {
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         
-        XCTAssertTrue(cell.waitForExistence(timeout: 10)) // увеличил на 5
+        XCTAssertTrue(cell.waitForExistence(timeout: 10))
     }
         
     func testFeed() throws {
@@ -66,7 +64,7 @@ class Image_FeedUITests: XCTestCase {
         
         cellToLike.tap()
         
-        sleep(5) // тут поправил
+        sleep(5)
         
         let image = app.scrollViews.images.element(boundBy: 0)
         image.pinch(withScale: 3, velocity: 1)
@@ -79,7 +77,7 @@ class Image_FeedUITests: XCTestCase {
     func testProfile() throws {
         sleep(3)
         app.tabBars.buttons.element(boundBy: 1).tap()
-        sleep(3) // добавил
+        sleep(3)
         XCTAssertTrue(app.staticTexts["Demain Petropavlov"].exists)
         
         XCTAssertTrue(app.staticTexts["@dpdeceased"].exists)
