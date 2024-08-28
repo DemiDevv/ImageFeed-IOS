@@ -19,13 +19,14 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 10))
         
         loginTextField.tap()
-        loginTextField.typeText("email@gmail.com")// fake data from network
+        loginTextField.typeText("demyanpain@gmail.com")// fake data from network
+        app.buttons["Done"].tap()
         webView.swipeUp()
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
-        passwordTextField.typeText("Password") // fake data from network
+        passwordTextField.typeText("Dema375640091") // fake data from network
         sleep(1)
         app.buttons["Done"].tap()
 
@@ -50,28 +51,35 @@ class Image_FeedUITests: XCTestCase {
     func testFeed() throws {
         let tablesQuery = app.tables
         
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        cell.swipeUp()
+        let cell = tablesQuery.descendants(matching: .cell).element(boundBy: 1)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        cell.swipeUp(velocity: .slow)
         
         sleep(2)
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        app.swipeDown()
         
+        let cellToLike = tablesQuery.descendants(matching: .cell).element(boundBy: 0)
+        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5))
+
         cellToLike.buttons["LikeButton"].tap()
+        sleep(3)
         cellToLike.buttons["LikeButton"].tap()
-        
-        sleep(2)
+        sleep(3)
         
         cellToLike.tap()
-        
-        sleep(5)
-        
+
         let image = app.scrollViews.images.element(boundBy: 0)
         image.pinch(withScale: 3, velocity: 1)
+        sleep(1)
         image.pinch(withScale: 0.5, velocity: -1)
+        sleep(1)
         
-        let navBackButtonWhiteButton = app.buttons["NabBackButton"]
+        let navBackButtonWhiteButton = app.buttons["NavBackButton"]
         navBackButtonWhiteButton.tap()
+        
+        let feed = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        XCTAssertTrue(feed.waitForExistence(timeout: 5))
     }
     
     func testProfile() throws {
