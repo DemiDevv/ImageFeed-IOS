@@ -1,7 +1,16 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func profileViewCreated()
+    func updateProfileDetails(profile: Profile)
+    func updateAvatarImage(with url: URL)
+}
+
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol?
     private let exitButton: UIButton = {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "ipad.and.arrow.forward")!,
@@ -26,27 +35,22 @@ final class ProfileViewController: UIViewController {
     )
     private var profileImageServiceObserver: NSObjectProtocol?
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        let profilePresenter = ProfileViewPresenter(view: self)
+        self.presenter = profilePresenter
+        profilePresenter.view = self
+
         self.view.backgroundColor = UIColor.ypBlackIOS
+        exitButton.accessibilityIdentifier = "ExitButton"
         exitButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
-        
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        profileViewCreated()
-        updateProfileDetailsIfNeeded()
-        updateAvatar()
+
+        presenter?.viewDidLoad()
     }
     
-    private func profileViewCreated() {
+    func profileViewCreated() {
         imageViewProfile.image = UIImage(named: "defaultProfileImage")
         imageViewProfile.tintColor = .red
         imageViewProfile.layer.cornerRadius = 35
@@ -92,54 +96,13 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.leadingAnchor.constraint(equalTo: imageViewProfile.leadingAnchor).isActive = true
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        
+    func updateAvatarImage(with url: URL) {
         imageViewProfile.kf.setImage(with: url) { result in
             switch result {
             case .success(let value):
                 print("Image: \(value.image); Image URL: \(value.source.url?.absoluteString ?? "")")
             case .failure(let error):
                 print("Error: \(error)")
-            }
-        }
-    }
-    
-    private func updateProfileDetailsIfNeeded() {
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-            fetchProfileImage(username: profile.username)
-        } else {
-            guard let token = tokenStorage.token else {
-                print("Error: No token available")
-                return
-            }
-            profileService.fetchProfile(token) { [weak self] result in
-                switch result {
-                case .success(let profile):
-                    DispatchQueue.main.async {
-                        self?.updateProfileDetails(profile: profile)
-                        self?.fetchProfileImage(username: profile.username)
-                    }
-                case .failure(let error):
-                    print("Failed to fetch profile: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-    
-    private func fetchProfileImage(username: String) {
-        profileImageService.fetchProfileImageURL(username: username) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let imageURL):
-                print("Profile image URL: \(imageURL)")
-                self.updateAvatar()
-            case .failure(let error):
-                print("Failed to fetch profile image URL: \(error)")
             }
         }
     }

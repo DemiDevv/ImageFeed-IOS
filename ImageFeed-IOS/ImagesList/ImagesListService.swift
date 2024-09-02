@@ -45,14 +45,21 @@ struct Photo {
 
 }
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol {
+    var lastLoadedPage: (number: Int, total: Int)? { get }
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+final class ImagesListService: ImagesListServiceProtocol {    
     static var shared = ImagesListService()
     
     private init() {}
     
     private let urlSession = URLSession.shared
     private(set) var photos: [Photo] = []
-    private var lastLoadedPage: (number: Int, total: Int)?
+    private(set) var lastLoadedPage: (number: Int, total: Int)?
     private var task: URLSessionTask?
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
